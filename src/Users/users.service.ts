@@ -59,16 +59,20 @@ export class UserService {
   }
 
   updatePassword(id: string, passwords: UpdatePasswordDto): UserResponse {
+    const { oldPassword, newPassword } = passwords;
+    if (!oldPassword || !newPassword) {
+      throw new RequiredFieldsIsMissedError();
+    }
+
     if (!validate(id)) {
       throw new InvalidIdError();
     }
 
-    const user: User = this.users.find((user) => user.id === id);
+    const user: User | undefined = this.users.find((user) => user.id === id);
     if (!user) {
       throw new UserNotFoundError();
     }
 
-    const { oldPassword, newPassword } = passwords;
     if (user.password !== oldPassword) {
       throw new WrongPasswordError();
     }
