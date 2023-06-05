@@ -5,6 +5,7 @@ import { User, UserResponse } from './interfaces/user.interface';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserNotFoundError, WrongPasswordError } from '../Errors/ServiceError';
+import { DBService } from 'src/DB/DB.service';
 
 function convertToUserResponse(user: User): UserResponse {
   const { password, ...response } = user;
@@ -13,14 +14,16 @@ function convertToUserResponse(user: User): UserResponse {
 
 @Injectable()
 export class UserService {
-  private readonly users: User[] = [];
+  private readonly userDB = this.dbService.userDB;
+
+  constructor(private readonly dbService: DBService) {}
 
   getAllUsers(): UserResponse[] {
-    return this.users.map(convertToUserResponse);
+    return this.userDB.getAll().map(convertToUserResponse);
   }
 
   getUserById(id: string): UserResponse {
-    const user: User | undefined = this.users.find((user) => user.id === id);
+    const user: User | undefined = this.userDB.getById(id);
     if (!user) {
       throw new UserNotFoundError();
     }
@@ -40,15 +43,15 @@ export class UserService {
       updatedAt: Date.now(),
     };
 
-    this.users.push(newUser);
+    this.userDB.create(newUser);
 
     return convertToUserResponse(newUser);
   }
 
   updatePassword(id: string, passwords: UpdatePasswordDto): UserResponse {
-    const { oldPassword, newPassword } = passwords;
+    const { oldPassword, newPassword: _ } = passwords;
 
-    const user: User | undefined = this.users.find((user) => user.id === id);
+    const user: User | undefined = this.userDB.getById(id);
     if (!user) {
       throw new UserNotFoundError();
     }
@@ -57,19 +60,16 @@ export class UserService {
       throw new WrongPasswordError();
     }
 
-    user.password = newPassword;
-    user.version++;
-    user.updatedAt = Date.now();
+    const updatedUser: User = this.userDB.update(id, passwords);
 
-    return convertToUserResponse(user);
+    return convertToUserResponse(updatedUser);
   }
 
   deleteUser(id: string): void {
-    const index: number = this.users.findIndex((user) => user.id === id);
-    if (index === -1) {
+    const userIndex = this.userDB.delete(id);
+
+    if (userIndex === -1) {
       throw new UserNotFoundError();
     }
-
-    this.users.splice(index, 1);
   }
 }
