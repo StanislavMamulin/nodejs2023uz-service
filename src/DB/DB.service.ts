@@ -11,11 +11,6 @@ const initDB: DB = {
   artists: [],
   albums: [],
   tracks: [],
-  favorites: {
-    artists: [],
-    albums: [],
-    tracks: [],
-  },
 };
 
 @Injectable()
