@@ -5,19 +5,20 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './interfaces/track.interface';
 import { TrackNotFoundError } from 'src/Errors/ServiceError';
+import { DBService } from 'src/DB/DB.service';
 
 @Injectable()
 export class TracksService {
-  private readonly tracks: Track[] = [];
+  private readonly tracksDB = this.tracksRepository.trackDB;
+
+  constructor(private readonly tracksRepository: DBService) {}
 
   getAll(): Track[] {
-    return this.tracks;
+    return this.tracksDB.getAll();
   }
 
   getTrack(id: string): Track {
-    const track: Track | undefined = this.tracks.find(
-      (track) => track.id === id,
-    );
+    const track: Track | undefined = this.tracksDB.getById(id);
 
     if (!track) {
       throw new TrackNotFoundError();
@@ -37,38 +38,26 @@ export class TracksService {
       duration,
     };
 
-    this.tracks.push(newTrack);
+    this.tracksDB.create(newTrack);
 
     return newTrack;
   }
 
   update(id: string, updateTrackDto: UpdateTrackDto): Track {
-    const { name, artistId, albumId, duration } = updateTrackDto;
-
-    const track: Track | undefined = this.tracks.find(
-      (track) => track.id === id,
-    );
+    const track: Track | undefined = this.tracksDB.update(id, updateTrackDto);
 
     if (!track) {
       throw new TrackNotFoundError();
     }
 
-    track.name = name;
-    track.artistId = artistId;
-    track.albumId = albumId;
-    track.duration = duration;
-
     return track;
   }
 
   deleteTrack(id: string) {
-    const trackIndex: number = this.tracks.findIndex(
-      (track) => track.id === id,
-    );
+    const trackIndex: number = this.tracksDB.delete(id);
+
     if (trackIndex === -1) {
       throw new TrackNotFoundError();
     }
-
-    this.tracks.splice(trackIndex, 1);
   }
 }
