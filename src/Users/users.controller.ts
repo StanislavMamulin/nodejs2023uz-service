@@ -13,6 +13,7 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserResponse } from './interfaces/user.interface';
 import { UserService } from './users.service';
 import { ErrorHandler } from 'src/Errors/ErrorHandler';
+import { GetByIdParams } from 'src/validators/findById.validator';
 
 @Controller('user')
 export class UsersController {
@@ -28,7 +29,9 @@ export class UsersController {
   }
 
   @Get(':id')
-  getOneUser(@Param('id') id: string): UserResponse {
+  getOneUser(@Param() params: GetByIdParams): UserResponse {
+    const { id } = params;
+
     try {
       return this.userService.getUserById(id);
     } catch (error) {
@@ -47,9 +50,10 @@ export class UsersController {
 
   @Put(':id')
   updatePassword(
-    @Param('id') id: string,
+    @Param() params: GetByIdParams,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ): UserResponse {
+    const { id } = params;
     try {
       return this.userService.updatePassword(id, updatePasswordDto);
     } catch (error) {
@@ -59,7 +63,9 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(204)
-  deleteUser(@Param('id') id: string) {
+  deleteUser(@Param() params: GetByIdParams) {
+    const { id } = params;
+
     try {
       this.userService.deleteUser(id);
     } catch (error) {

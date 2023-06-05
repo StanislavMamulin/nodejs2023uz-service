@@ -1,15 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4, validate } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import { User, UserResponse } from './interfaces/user.interface';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import {
-  InvalidIdError,
-  RequiredFieldsIsMissedError,
-  UserNotFoundError,
-  WrongPasswordError,
-} from '../Errors/ServiceError';
+import { UserNotFoundError, WrongPasswordError } from '../Errors/ServiceError';
 
 function convertToUserResponse(user: User): UserResponse {
   const { password, ...response } = user;
@@ -25,10 +20,6 @@ export class UserService {
   }
 
   getUserById(id: string): UserResponse {
-    if (!validate(id)) {
-      throw new InvalidIdError();
-    }
-
     const user: User | undefined = this.users.find((user) => user.id === id);
     if (!user) {
       throw new UserNotFoundError();
@@ -39,10 +30,6 @@ export class UserService {
 
   create(userDto: CreateUserDto): UserResponse {
     const { login, password } = userDto;
-
-    if (!login || !password) {
-      throw new RequiredFieldsIsMissedError();
-    }
 
     const newUser: User = {
       id: uuidv4(),
@@ -60,13 +47,6 @@ export class UserService {
 
   updatePassword(id: string, passwords: UpdatePasswordDto): UserResponse {
     const { oldPassword, newPassword } = passwords;
-    if (!oldPassword || !newPassword) {
-      throw new RequiredFieldsIsMissedError();
-    }
-
-    if (!validate(id)) {
-      throw new InvalidIdError();
-    }
 
     const user: User | undefined = this.users.find((user) => user.id === id);
     if (!user) {
@@ -85,10 +65,6 @@ export class UserService {
   }
 
   deleteUser(id: string): void {
-    if (!validate(id)) {
-      throw new InvalidIdError();
-    }
-
     const index: number = this.users.findIndex((user) => user.id === id);
     if (index === -1) {
       throw new UserNotFoundError();
