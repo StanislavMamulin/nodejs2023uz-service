@@ -7,6 +7,13 @@ enum ErrorCodes {
   WRONG_PASSWORD,
 }
 
+export enum NotFoundType {
+  USER = 'USER_NOT_FOUND',
+  TRACK = 'TRACK_NOT_FOUND',
+  ARTIST = 'ARTIST_NOT_FOUND',
+  ALBUM = 'ALBUM_NOT_FOUND',
+}
+
 export class ServiceError extends Error {
   message: string;
   code: ErrorCodes;
@@ -15,6 +22,14 @@ export class ServiceError extends Error {
     super(message);
     this.message = message;
     this.code = code;
+  }
+}
+
+export class NotFoundError extends ServiceError {
+  constructor(notFoundType: NotFoundType) {
+    const message: string =
+      ErrorMessages[notFoundType] || ErrorMessages.DEFAULT_NOT_FOUND;
+    super(message, ErrorCodes.NOT_FOUND);
   }
 }
 

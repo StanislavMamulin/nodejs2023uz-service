@@ -9,6 +9,7 @@ import {
   UserNotFoundError,
   TrackNotFoundError,
   WrongPasswordError,
+  NotFoundError,
 } from './ServiceError';
 
 export function ErrorHandler(error: unknown): void {
@@ -16,7 +17,8 @@ export function ErrorHandler(error: unknown): void {
     throw new BadRequestException(error.message);
   } else if (
     error instanceof UserNotFoundError ||
-    error instanceof TrackNotFoundError
+    error instanceof TrackNotFoundError ||
+    error instanceof NotFoundError
   ) {
     throw new NotFoundException(error.message);
   } else if (error instanceof RequiredFieldsIsMissedError) {
