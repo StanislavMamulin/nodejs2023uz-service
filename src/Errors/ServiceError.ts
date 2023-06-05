@@ -2,7 +2,7 @@ import { ErrorMessages } from './errorMessages';
 
 enum ErrorCodes {
   INVALID_ID,
-  USER_NOT_FOUND,
+  NOT_FOUND,
   REQUIRED_FIELDS_IS_MISSED,
   WRONG_PASSWORD,
 }
@@ -26,7 +26,13 @@ export class InvalidIdError extends ServiceError {
 
 export class UserNotFoundError extends ServiceError {
   constructor(message: string = ErrorMessages.USER_NOT_FOUND) {
-    super(message, ErrorCodes.USER_NOT_FOUND);
+    super(message, ErrorCodes.NOT_FOUND);
+  }
+}
+
+export class TrackNotFoundError extends ServiceError {
+  constructor(message: string = ErrorMessages.TRACK_NOT_FOUND) {
+    super(message, ErrorCodes.NOT_FOUND);
   }
 }
 
