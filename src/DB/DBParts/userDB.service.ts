@@ -1,6 +1,6 @@
-import { User } from 'src/Users/interfaces/user.interface';
+import { User } from '../../Users/interfaces/user.interface';
 import { BasicDB } from './basicDB.service';
-import { UpdatePasswordDto } from 'src/Users/dto/update-password.dto';
+import { UpdatePasswordDto } from '../../Users/dto/update-password.dto';
 
 export class UserDB extends BasicDB<User, UpdatePasswordDto> {
   update(id: string, data: UpdatePasswordDto): User {

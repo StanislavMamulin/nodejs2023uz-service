@@ -12,8 +12,8 @@ import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './interfaces/track.interface';
-import { ErrorHandler } from 'src/Errors/ErrorHandler';
-import { GetByIdParams } from 'src/validators/findById.validator';
+import { ErrorHandler } from '../Errors/ErrorHandler';
+import { GetByIdParams } from '../validators/findById.validator';
 
 @Controller('track')
 export class TracksController {

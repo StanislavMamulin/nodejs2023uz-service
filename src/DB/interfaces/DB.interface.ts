@@ -1,7 +1,7 @@
-import { Album } from 'src/Albums/interfaces/album.interface';
-import { User } from 'src/Users/interfaces/user.interface';
-import { Artist } from 'src/artists/interfaces/artist.interface';
-import { Track } from 'src/tracks/interfaces/track.interface';
+import { Album } from '../../albums/interfaces/album.interface';
+import { User } from '../../Users/interfaces/user.interface';
+import { Artist } from '../../artists/interfaces/artist.interface';
+import { Track } from '../../tracks/interfaces/track.interface';
 
 export class DB {
   users: User[];

@@ -3,9 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { DBService } from 'src/DB/DB.service';
+import { DBService } from '../DB/DB.service';
 import { Album } from './interfaces/album.interface';
-import { NotFoundError, NotFoundType } from 'src/Errors/ServiceError';
+import { NotFoundError, NotFoundType } from '../Errors/ServiceError';
 
 @Injectable()
 export class AlbumsService {

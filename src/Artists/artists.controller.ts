@@ -11,8 +11,8 @@ import {
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { ErrorHandler } from 'src/Errors/ErrorHandler';
-import { GetByIdParams } from 'src/validators/findById.validator';
+import { ErrorHandler } from '../Errors/ErrorHandler';
+import { GetByIdParams } from '../validators/findById.validator';
 import { Artist } from './interfaces/artist.interface';
 
 @Controller('artist')

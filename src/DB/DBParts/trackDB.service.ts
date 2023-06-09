@@ -1,5 +1,5 @@
-import { UpdateTrackDto } from 'src/tracks/dto/update-track.dto';
-import { Track } from 'src/tracks/interfaces/track.interface';
+import { UpdateTrackDto } from '../../tracks/dto/update-track.dto';
+import { Track } from '../../tracks/interfaces/track.interface';
 import { BasicDB } from './basicDB.service';
 
 export class TrackDB extends BasicDB<Track, UpdateTrackDto> {
