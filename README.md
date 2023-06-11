@@ -1,31 +1,48 @@
 # Home Library Service
 
-Let's try to create a Home Library Service! Users can create, read, update, delete data about Artists, Tracks and Albums, add them to Favorites in their own Home Library!
+Users can create, read, update, delete data about Artists, Tracks and Albums, add them to Favorites in their own Home Library!
 
-## Prerequisites
+# Install
+### Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Docker - [Download & Install Docker](https://www.docker.com/products/docker-desktop/).
 
-## Downloading
+### Downloading
 
 ```
 git clone {repository URL}
 ```
 
-## Installing NPM modules
+### Installing NPM modules
 
 ```
 npm install
 ```
 
-## Running application
+# Running application
 
-```
+### Standalone
+- Production mode
+```bash
 npm start
 ```
+- Development mode
+```bash
+npm run start:dev
+```
 
-## Testing
+### Start in docker container
+- Production mode
+```bash
+docker compose up --build
+```
+- Development mode
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
+# Testing
 
 After application running open new terminal and enter:
 
@@ -61,4 +78,8 @@ npm run lint
 
 ```
 npm run format
+```
+### Scan it for security vulnerabilities (with docker scout)
+```
+npm run scansecurity
 ```
