@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import {
@@ -25,5 +26,7 @@ export function ErrorHandler(error: unknown): void {
     throw new BadRequestException(error.message);
   } else if (error instanceof WrongPasswordError) {
     throw new ForbiddenException(error.message);
+  } else {
+    throw new InternalServerErrorException();
   }
 }
