@@ -36,11 +36,11 @@ npm run start:dev
 ### Start in docker container
 - Production mode
 ```bash
-docker compose up --build
+npm run docker:prod
 ```
 - Development mode
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+npm run docker:dev
 ```
 # Testing
 
