@@ -1,75 +1,125 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
+import { Prisma, User as PrismaUser } from '@prisma/client';
 
 import { User, UserResponse } from './interfaces/user.interface';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserNotFoundError, WrongPasswordError } from '../Errors/ServiceError';
-import { DBService } from '../DB/DB.service';
+import { PrismaService } from '../prisma/prisma.service';
 
-function convertToUserResponse(user: User): UserResponse {
-  const { password, ...response } = user;
-  return response;
+function convertToUserResponse(user: PrismaUser | User): UserResponse {
+  const { password, createdAt, updatedAt, ...response } = user;
+  return {
+    ...response,
+    createdAt: Number(createdAt),
+    updatedAt: Number(updatedAt),
+  };
 }
 
 @Injectable()
 export class UserService {
-  private readonly userDB = this.dbService.userDB;
+  constructor(private prisma: PrismaService) {}
 
-  constructor(private readonly dbService: DBService) {}
-
-  getAllUsers(): UserResponse[] {
-    return this.userDB.getAll().map(convertToUserResponse);
+  async getAllUsers() {
+    const users = await this.prisma.user.findMany();
+    return users.map(convertToUserResponse);
   }
 
-  getUserById(id: string): UserResponse {
-    const user: User | undefined = this.userDB.getById(id);
-    if (!user) {
-      throw new UserNotFoundError();
+  async getUserById(id: string) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!user) {
+        throw new UserNotFoundError();
+      }
+
+      return convertToUserResponse(user);
+    } catch (error) {
+      throw error;
     }
-
-    return convertToUserResponse(user);
   }
 
-  create(userDto: CreateUserDto): UserResponse {
-    const { login, password } = userDto;
+  async create(userDto: CreateUserDto): Promise<UserResponse> {
+    try {
+      const { login, password } = userDto;
 
-    const newUser: User = {
-      id: uuidv4(),
-      login,
-      password,
-      version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
+      const now = Date.now();
 
-    this.userDB.create(newUser);
+      const newUser: User = {
+        id: uuidv4(),
+        login,
+        password,
+        version: 1,
+        createdAt: now,
+        updatedAt: now,
+      };
 
-    return convertToUserResponse(newUser);
-  }
+      await this.prisma.user.create({
+        data: newUser,
+      });
 
-  updatePassword(id: string, passwords: UpdatePasswordDto): UserResponse {
-    const { oldPassword, newPassword: _ } = passwords;
-
-    const user: User | undefined = this.userDB.getById(id);
-    if (!user) {
-      throw new UserNotFoundError();
+      return convertToUserResponse(newUser);
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
-
-    if (user.password !== oldPassword) {
-      throw new WrongPasswordError();
-    }
-
-    const updatedUser: User = this.userDB.update(id, passwords);
-
-    return convertToUserResponse(updatedUser);
   }
 
-  deleteUser(id: string): void {
-    const userIndex = this.userDB.delete(id);
+  async updatePassword(
+    id: string,
+    passwords: UpdatePasswordDto,
+  ): Promise<UserResponse> {
+    try {
+      const { oldPassword, newPassword } = passwords;
 
-    if (userIndex === -1) {
-      throw new UserNotFoundError();
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+      });
+
+      if (!user) {
+        throw new UserNotFoundError();
+      }
+
+      if (user.password !== oldPassword) {
+        throw new WrongPasswordError();
+      }
+
+      const changedUserData = {
+        password: newPassword,
+        version: user.version + 1,
+        updatedAt: Date.now(),
+      };
+
+      const updatedUser = await this.prisma.user.update({
+        where: { id },
+        data: changedUserData,
+      });
+
+      return convertToUserResponse(updatedUser);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    try {
+      await this.prisma.user.delete({
+        where: { id },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new UserNotFoundError();
+        }
+      }
+
+      throw error;
     }
   }
 }
