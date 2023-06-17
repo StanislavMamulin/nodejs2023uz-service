@@ -11,7 +11,9 @@ import {
   TrackNotFoundError,
   WrongPasswordError,
   NotFoundError,
+  NotFoundType,
 } from './ServiceError';
+import { Prisma } from '@prisma/client';
 
 export function ErrorHandler(error: unknown): void {
   if (error instanceof InvalidIdError) {
@@ -29,4 +31,17 @@ export function ErrorHandler(error: unknown): void {
   } else {
     throw new InternalServerErrorException();
   }
+}
+
+export function ServiceErrorsHandler(
+  error: unknown,
+  typeOfService?: NotFoundType,
+) {
+  if (error instanceof Prisma.PrismaClientKnownRequestError && typeOfService) {
+    if (error.code === 'P2025') {
+      throw new NotFoundError(typeOfService);
+    }
+  }
+
+  throw error;
 }
