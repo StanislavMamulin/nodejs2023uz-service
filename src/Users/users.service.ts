@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { Prisma, User as PrismaUser } from '@prisma/client';
+import { User as PrismaUser } from '@prisma/client';
 
 import { User, UserResponse } from './interfaces/user.interface';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserNotFoundError, WrongPasswordError } from '../Errors/ServiceError';
+import {
+  NotFoundError,
+  NotFoundType,
+  WrongPasswordError,
+} from '../Errors/ServiceError';
 import { PrismaService } from '../prisma/prisma.service';
+import { ServiceErrorsHandler } from '../Errors/ErrorHandler';
 
 function convertToUserResponse(user: PrismaUser | User): UserResponse {
   const { password, createdAt, updatedAt, ...response } = user;
@@ -21,26 +26,28 @@ function convertToUserResponse(user: PrismaUser | User): UserResponse {
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllUsers() {
-    const users = await this.prisma.user.findMany();
-    return users.map(convertToUserResponse);
+  async getAllUsers(): Promise<UserResponse[]> {
+    try {
+      const users = await this.prisma.user.findMany();
+      return users.map(convertToUserResponse);
+    } catch (error) {
+      ServiceErrorsHandler(error);
+    }
   }
 
-  async getUserById(id: string) {
+  async getUserById(id: string): Promise<UserResponse> {
     try {
       const user = await this.prisma.user.findUnique({
-        where: {
-          id,
-        },
+        where: { id },
       });
 
       if (!user) {
-        throw new UserNotFoundError();
+        throw new NotFoundError(NotFoundType.USER);
       }
 
       return convertToUserResponse(user);
     } catch (error) {
-      throw error;
+      ServiceErrorsHandler(error);
     }
   }
 
@@ -65,8 +72,7 @@ export class UserService {
 
       return convertToUserResponse(newUser);
     } catch (error) {
-      console.error(error);
-      throw error;
+      ServiceErrorsHandler(error);
     }
   }
 
@@ -82,7 +88,7 @@ export class UserService {
       });
 
       if (!user) {
-        throw new UserNotFoundError();
+        throw new NotFoundError(NotFoundType.USER);
       }
 
       if (user.password !== oldPassword) {
@@ -102,8 +108,7 @@ export class UserService {
 
       return convertToUserResponse(updatedUser);
     } catch (error) {
-      console.error(error);
-      throw error;
+      ServiceErrorsHandler(error, NotFoundType.USER);
     }
   }
 
@@ -113,13 +118,7 @@ export class UserService {
         where: { id },
       });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
-          throw new UserNotFoundError();
-        }
-      }
-
-      throw error;
+      ServiceErrorsHandler(error, NotFoundType.USER);
     }
   }
 }
