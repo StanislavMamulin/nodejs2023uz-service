@@ -20,9 +20,9 @@ export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
   @Get()
-  getAllAlbums(): Promise<Album[]> {
+  async getAllAlbums(): Promise<Album[]> {
     try {
-      return this.albumsService.getAll();
+      return await this.albumsService.getAll();
     } catch (error) {
       ErrorHandler(error);
     }
