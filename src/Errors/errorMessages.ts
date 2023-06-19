@@ -7,4 +7,8 @@ export enum ErrorMessages {
   REQUIRED_FIELDS_IS_MISSED = 'Required body fields is missed',
   WRONG_PASSWORD = 'Wrong old password',
   DEFAULT_NOT_FOUND = 'Item not found',
+  TRACK_DOES_NOT_EXIST = 'Track does not exist',
+  ALBUM_DOES_NOT_EXIST = 'Album does not exist',
+  ARTIST_DOES_NOT_EXIST = 'Artist does not exist',
+  FAVORITES_DOES_NOT_EXIST = 'Favorites does not exist',
 }

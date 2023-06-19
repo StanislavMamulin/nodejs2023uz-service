@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   InternalServerErrorException,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import {
   InvalidIdError,
@@ -12,6 +13,8 @@ import {
   WrongPasswordError,
   NotFoundError,
   NotFoundType,
+  ItemDoesNotExistError,
+  NotExistType,
 } from './ServiceError';
 import { Prisma } from '@prisma/client';
 
@@ -28,6 +31,8 @@ export function ErrorHandler(error: unknown): void {
     throw new BadRequestException(error.message);
   } else if (error instanceof WrongPasswordError) {
     throw new ForbiddenException(error.message);
+  } else if (error instanceof ItemDoesNotExistError) {
+    throw new UnprocessableEntityException(error.message);
   } else {
     throw new InternalServerErrorException();
   }
@@ -40,6 +45,19 @@ export function ServiceErrorsHandler(
   if (error instanceof Prisma.PrismaClientKnownRequestError && typeOfService) {
     if (error.code === 'P2025') {
       throw new NotFoundError(typeOfService);
+    }
+  }
+
+  throw error;
+}
+
+export function NotExistErrorsHandler(
+  error: unknown,
+  typeOfService?: NotExistType,
+) {
+  if (error instanceof Prisma.PrismaClientKnownRequestError && typeOfService) {
+    if (error.code === 'P2025') {
+      throw new ItemDoesNotExistError(typeOfService);
     }
   }
 

@@ -5,6 +5,7 @@ enum ErrorCodes {
   NOT_FOUND,
   REQUIRED_FIELDS_IS_MISSED,
   WRONG_PASSWORD,
+  NOT_EXIST,
 }
 
 export enum NotFoundType {
@@ -12,6 +13,13 @@ export enum NotFoundType {
   TRACK = 'TRACK_NOT_FOUND',
   ARTIST = 'ARTIST_NOT_FOUND',
   ALBUM = 'ALBUM_NOT_FOUND',
+}
+
+export enum NotExistType {
+  TRACK_DOES_NOT_EXIST = 'TRACK_DOES_NOT_EXIST',
+  ALBUM_DOES_NOT_EXIST = 'ALBUM_DOES_NOT_EXIST',
+  ARTIST_DOES_NOT_EXIST = 'ARTIST_DOES_NOT_EXIST',
+  FAVORITES_DOES_NOT_EXIST = 'FAVORITES_DOES_NOT_EXIST',
 }
 
 export class ServiceError extends Error {
@@ -60,5 +68,13 @@ export class RequiredFieldsIsMissedError extends ServiceError {
 export class WrongPasswordError extends ServiceError {
   constructor(message: string = ErrorMessages.WRONG_PASSWORD) {
     super(message, ErrorCodes.WRONG_PASSWORD);
+  }
+}
+
+export class ItemDoesNotExistError extends ServiceError {
+  constructor(notFoundType: NotExistType) {
+    const message: string =
+      ErrorMessages[notFoundType] || ErrorMessages.DEFAULT_NOT_FOUND;
+    super(message, ErrorCodes.NOT_EXIST);
   }
 }
