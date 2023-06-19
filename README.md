@@ -1,33 +1,48 @@
 # Home Library Service
 
-## Prerequisites
+Users can create, read, update, delete data about Artists, Tracks and Albums, add them to Favorites in their own Home Library!
+
+# Install
+### Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Docker - [Download & Install Docker](https://www.docker.com/products/docker-desktop/).
 
-## Downloading
+### Downloading
 
 ```
 git clone {repository URL}
 ```
 
-## Installing NPM modules
+### Installing NPM modules
 
 ```
 npm install
 ```
 
-## Running application
+# Running application
 
-```
+### Standalone
+- Production mode
+```bash
 npm start
 ```
+- Development mode
+```bash
+npm run start:dev
+```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
-
-## Testing
+### Start in docker container
+- Production mode
+```bash
+npm run docker:prod
+```
+- Development mode
+```bash
+npm run docker:dev
+```
+# Testing
 
 After application running open new terminal and enter:
 
@@ -64,9 +79,7 @@ npm run lint
 ```
 npm run format
 ```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+### Scan it for security vulnerabilities (with docker scout)
+```
+npm run scansecurity
+```
