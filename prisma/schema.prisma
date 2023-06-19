@@ -8,38 +8,44 @@ datasource db {
 }
 
 model User {
-  id String @id
-  login String
-  password String
-  version Int @default(1)
+  id        String @id
+  login     String
+  password  String
+  version   Int    @default(1)
   createdAt BigInt
-  updatedAt BigInt 
+  updatedAt BigInt
 }
 
 model Album {
-  id String @id
-  name String
-  year Int
-  artist Artist? @relation(fields: [artistId], references: [id])
+  id       String  @id
+  name     String
+  year     Int
+  artist   Artist? @relation(fields: [artistId], references: [id])
   artistId String?
-  tracks Track[]
+  tracks   Track[]
 }
 
 model Artist {
-  id String @id
-  name String
+  id     String  @id
+  name   String
   grammy Boolean
   albums Album[]
   tracks Track[]
 }
 
 model Track {
-  id String @id
-  name String
-  artist Artist? @relation(fields: [artistId], references: [id])
+  id       String  @id
+  name     String
+  artist   Artist? @relation(fields: [artistId], references: [id])
   artistId String?
-  album Album? @relation(fields: [albumId], references: [id])
-  albumId String?
+  album    Album?  @relation(fields: [albumId], references: [id])
+  albumId  String?
   duration Int
 }
 
+model Favorites {
+  id      Int      @id @default(1)
+  artists String[] @default([])
+  albums  String[] @default([])
+  tracks  String[] @default([])
+}
