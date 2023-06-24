@@ -1,0 +1,8 @@
+services:
+  node:
+    build:
+      context: .
+      dockerfile: ./docker/service/Dockerfile.dev
+    volumes:
+      - ./src:/usr/app/src
+    container_name: node-dev
