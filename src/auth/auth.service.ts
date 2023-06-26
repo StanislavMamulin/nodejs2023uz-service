@@ -9,7 +9,7 @@ import { LoginDto } from './dto/login.dto';
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -23,9 +23,9 @@ export class AuthService {
       if (!user) {
         throw new ForbiddenException('Incorrect login or password');
       }
-  
+
       const passwordMatch: boolean = await compare(password, user.password);
-        
+
       if (!passwordMatch) {
         throw new ForbiddenException('Incorrect login or password');
       }
@@ -33,7 +33,7 @@ export class AuthService {
       const payload = {
         sub: user.id,
         login: user.login,
-      }
+      };
 
       const token = {
         accessToken: await this.jwtService.signAsync(payload),

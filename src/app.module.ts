@@ -24,16 +24,17 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, {
-    provide: 'APP_FILTER',
-    useClass: AllExceptionsFilter,
-  }],
-  exports: [LoggingModule]
+  providers: [
+    AppService,
+    {
+      provide: 'APP_FILTER',
+      useClass: AllExceptionsFilter,
+    },
+  ],
+  exports: [LoggingModule],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }

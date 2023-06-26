@@ -10,14 +10,12 @@ import { Public } from './decorators/public.decorator';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private userService: UserService
-  ) { }
+    private userService: UserService,
+  ) {}
 
   @Public()
   @Post('/signup')
-  async signup(
-    @Body() createUserDto: CreateUserDto,
-  ) {
+  async signup(@Body() createUserDto: CreateUserDto) {
     try {
       const createdUser = this.userService.create(createUserDto);
       return createdUser;
@@ -28,9 +26,7 @@ export class AuthController {
 
   @Public()
   @Post('/login')
-  async login(
-    @Body() loginDto: LoginDto,
-  ) {
+  async login(@Body() loginDto: LoginDto) {
     try {
       return await this.authService.login(loginDto);
     } catch (error) {

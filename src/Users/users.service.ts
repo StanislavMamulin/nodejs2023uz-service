@@ -100,7 +100,7 @@ export class UserService {
       }
 
       const passwordMatch: boolean = await compare(oldPassword, user.password);
-      
+
       if (!passwordMatch) {
         throw new WrongPasswordError();
       }
