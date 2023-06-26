@@ -10,6 +10,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { LoggingModule } from './logger/LoggingService.module';
 import { AllExceptionsFilter } from './Errors/error-exception.filter';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,19 +20,21 @@ import { AllExceptionsFilter } from './Errors/error-exception.filter';
     AlbumsModule,
     PrismaModule,
     FavoritesModule,
-    LoggingModule
+    LoggingModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, {
-    provide: 'APP_FILTER',
-    useClass: AllExceptionsFilter,
-  }],
-  exports: [LoggingModule]
+  providers: [
+    AppService,
+    {
+      provide: 'APP_FILTER',
+      useClass: AllExceptionsFilter,
+    },
+  ],
+  exports: [LoggingModule],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }

@@ -12,4 +12,4 @@ export const SubjectType = {
     favoriteField: 'tracks',
   },
 };
-export type ItemType = typeof SubjectType[keyof typeof SubjectType];
+export type ItemType = (typeof SubjectType)[keyof typeof SubjectType];

@@ -10,13 +10,15 @@ export class LoggingService extends ConsoleLogger {
   logRequest(req: Request): void {
     this.setContext('Request');
     const [_, url, param] = req.baseUrl.split('/');
-    const reqMessage = `URL: /${url} - PARAMETER: ${param} - METHOD: ${req.method} - BODY: ${JSON.stringify(req.body)}`;
+    const reqMessage = `URL: /${url} - PARAMETER: ${param} - METHOD: ${
+      req.method
+    } - BODY: ${JSON.stringify(req.body)}`;
     this.log(reqMessage);
   }
 
   logResponse(res: Response): void {
     this.setContext('Response');
-    const resMessage = `STATUS CODE: ${res.statusCode}`
+    const resMessage = `STATUS CODE: ${res.statusCode}`;
     this.log(resMessage);
   }
 }
