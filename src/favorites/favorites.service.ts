@@ -3,8 +3,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Track } from '../tracks/interfaces/track.interface';
 import { FavoritesResponse } from './interfaces/favoritesResponse.interface';
 import { Favorites } from './interfaces/favorites.interface';
-import { Artist } from '../artists/interfaces/artist.interface';
-import { Album } from '../albums/interfaces/album.interface';
+import { Artist } from '../Artists/interfaces/artist.interface';
+import { Album } from '../Albums/interfaces/album.interface';
 import {
   NotExistErrorsHandler,
   ServiceErrorsHandler,
