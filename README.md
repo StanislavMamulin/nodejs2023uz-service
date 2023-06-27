@@ -21,9 +21,15 @@ git clone {repository URL}
 npm install
 ```
 
+### Rename .env.example file to .env
+
+```
+ .env.example  =>  .env
+```
+
 # Running application
 
-### Standalone
+### Standalone (without docker)
 - Production mode
 ```bash
 npm start
@@ -46,19 +52,7 @@ npm run docker:dev
 
 After application running open new terminal and enter:
 
-To run all tests without authorization
-
-```
-npm run test
-```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
-
-To run all test with authorization
+To run all tests with authorization
 
 ```
 npm run test:auth
