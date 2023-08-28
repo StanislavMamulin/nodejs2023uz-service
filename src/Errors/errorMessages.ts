@@ -5,7 +5,7 @@ export enum ErrorMessages {
   ALBUM_NOT_FOUND = 'Album not found',
   INVALID_ID = 'Incorrect user id format',
   REQUIRED_FIELDS_IS_MISSED = 'Required body fields is missed',
-  WRONG_PASSWORD = 'Wrong old password',
+  WRONG_PASSWORD = 'Wrong password',
   DEFAULT_NOT_FOUND = 'Item not found',
   TRACK_DOES_NOT_EXIST = 'Track does not exist',
   ALBUM_DOES_NOT_EXIST = 'Album does not exist',
