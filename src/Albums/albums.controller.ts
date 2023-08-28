@@ -11,8 +11,8 @@ import {
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { ErrorHandler } from 'src/Errors/ErrorHandler';
-import { GetByIdParams } from 'src/validators/findById.validator';
+import { ErrorHandler } from '../Errors/ErrorHandler';
+import { GetByIdParams } from '../validators/findById.validator';
 import { Album } from './interfaces/album.interface';
 
 @Controller('album')

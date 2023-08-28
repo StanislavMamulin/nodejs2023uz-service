@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './interfaces/artist.interface';
-import { NotFoundError, NotFoundType } from 'src/Errors/ServiceError';
-import { DBService } from 'src/DB/DB.service';
+import { NotFoundError, NotFoundType } from '../Errors/ServiceError';
+import { DBService } from '../DB/DB.service';
 
 @Injectable()
 export class ArtistsService {

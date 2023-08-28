@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './interfaces/track.interface';
-import { TrackNotFoundError } from 'src/Errors/ServiceError';
-import { DBService } from 'src/DB/DB.service';
+import { TrackNotFoundError } from '../Errors/ServiceError';
+import { DBService } from '../DB/DB.service';
 
 @Injectable()
 export class TracksService {

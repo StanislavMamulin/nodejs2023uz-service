@@ -12,5 +12,6 @@ async function bootstrap() {
   );
   dotenv.config();
   await app.listen(process.env.PORT);
+  console.log('Service started on port', process.env.PORT);
 }
 bootstrap();

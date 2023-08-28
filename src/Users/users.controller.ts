@@ -12,8 +12,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserResponse } from './interfaces/user.interface';
 import { UserService } from './users.service';
-import { ErrorHandler } from 'src/Errors/ErrorHandler';
-import { GetByIdParams } from 'src/validators/findById.validator';
+import { ErrorHandler } from '../Errors/ErrorHandler';
+import { GetByIdParams } from '../validators/findById.validator';
 
 @Controller('user')
 export class UsersController {

@@ -5,7 +5,7 @@ import { User, UserResponse } from './interfaces/user.interface';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserNotFoundError, WrongPasswordError } from '../Errors/ServiceError';
-import { DBService } from 'src/DB/DB.service';
+import { DBService } from '../DB/DB.service';
 
 function convertToUserResponse(user: User): UserResponse {
   const { password, ...response } = user;
