@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { User as PrismaUser } from '@prisma/client';
+import { hash, compare } from 'bcrypt';
 
 import { User, UserResponse } from './interfaces/user.interface';
 import { UpdatePasswordDto } from './dto/update-password.dto';
@@ -20,6 +21,11 @@ function convertToUserResponse(user: PrismaUser | User): UserResponse {
     createdAt: Number(createdAt),
     updatedAt: Number(updatedAt),
   };
+}
+
+function getHashedPassword(password: string): Promise<string> {
+  const salt = Number(process.env.SALT) || 10;
+  return hash(password, salt);
 }
 
 @Injectable()
@@ -55,12 +61,14 @@ export class UserService {
     try {
       const { login, password } = userDto;
 
-      const now = Date.now();
+      const now: number = Date.now();
+
+      const passwordHash = await getHashedPassword(password);
 
       const newUser: User = {
         id: uuidv4(),
         login,
-        password,
+        password: passwordHash,
         version: 1,
         createdAt: now,
         updatedAt: now,
@@ -91,12 +99,14 @@ export class UserService {
         throw new NotFoundError(NotFoundType.USER);
       }
 
-      if (user.password !== oldPassword) {
+      const passwordMatch: boolean = await compare(oldPassword, user.password);
+
+      if (!passwordMatch) {
         throw new WrongPasswordError();
       }
 
       const changedUserData = {
-        password: newPassword,
+        password: await getHashedPassword(newPassword),
         version: user.version + 1,
         updatedAt: Date.now(),
       };

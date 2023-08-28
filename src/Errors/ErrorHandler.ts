@@ -29,7 +29,10 @@ export function ErrorHandler(error: unknown): void {
     throw new NotFoundException(error.message);
   } else if (error instanceof RequiredFieldsIsMissedError) {
     throw new BadRequestException(error.message);
-  } else if (error instanceof WrongPasswordError) {
+  } else if (
+    error instanceof WrongPasswordError ||
+    error instanceof ForbiddenException
+  ) {
     throw new ForbiddenException(error.message);
   } else if (error instanceof ItemDoesNotExistError) {
     throw new UnprocessableEntityException(error.message);
