@@ -20,42 +20,42 @@ export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
   @Get()
-  getAllAlbums() {
+  async getAllAlbums(): Promise<Album[]> {
     try {
-      return this.albumsService.getAll();
+      return await this.albumsService.getAll();
     } catch (error) {
       ErrorHandler(error);
     }
   }
 
   @Get(':id')
-  getAlbum(@Param() params: GetByIdParams) {
+  async getAlbum(@Param() params: GetByIdParams): Promise<Album> {
     const { id } = params;
     try {
-      return this.albumsService.getAlbum(id);
+      return await this.albumsService.getAlbum(id);
     } catch (error) {
       ErrorHandler(error);
     }
   }
 
   @Post()
-  createAlbum(@Body() createAlbumDto: CreateAlbumDto): Album {
+  async createAlbum(@Body() createAlbumDto: CreateAlbumDto): Promise<Album> {
     try {
-      return this.albumsService.create(createAlbumDto);
+      return await this.albumsService.create(createAlbumDto);
     } catch (error) {
       ErrorHandler(error);
     }
   }
 
   @Put(':id')
-  updateAlbumInfo(
+  async updateAlbumInfo(
     @Param() params: GetByIdParams,
     @Body() updateAlbumDto: UpdateAlbumDto,
-  ) {
+  ): Promise<Album> {
     const { id } = params;
 
     try {
-      return this.albumsService.update(id, updateAlbumDto);
+      return await this.albumsService.update(id, updateAlbumDto);
     } catch (error) {
       ErrorHandler(error);
     }
@@ -63,10 +63,10 @@ export class AlbumsController {
 
   @Delete(':id')
   @HttpCode(204)
-  deleteAlbum(@Param() params: GetByIdParams) {
+  async deleteAlbum(@Param() params: GetByIdParams): Promise<void> {
     const { id } = params;
     try {
-      return this.albumsService.deleteAlbum(id);
+      await this.albumsService.deleteAlbum(id);
     } catch (error) {
       ErrorHandler(error);
     }

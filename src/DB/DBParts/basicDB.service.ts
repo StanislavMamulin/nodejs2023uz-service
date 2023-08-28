@@ -1,9 +1,9 @@
 import { User } from '../../Users/interfaces/user.interface';
-import { Album } from '../../albums/interfaces/album.interface';
-import { Artist } from '../../artists/interfaces/artist.interface';
+import { Album } from '../../Albums/interfaces/album.interface';
+import { Artist } from '../../Artists/interfaces/artist.interface';
 import { Track } from '../../tracks/interfaces/track.interface';
-import { UpdateAlbumDto } from '../../albums/dto/update-album.dto';
-import { UpdateArtistDto } from '../../artists/dto/update-artist.dto';
+import { UpdateAlbumDto } from '../../Albums/dto/update-album.dto';
+import { UpdateArtistDto } from '../../Artists/dto/update-artist.dto';
 import { UpdatePasswordDto } from '../../Users/dto/update-password.dto';
 import { UpdateTrackDto } from '../../tracks/dto/update-track.dto';
 

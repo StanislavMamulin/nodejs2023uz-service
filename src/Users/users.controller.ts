@@ -20,42 +20,52 @@ export class UsersController {
   constructor(private userService: UserService) {}
 
   @Get()
-  getAllUsers(): UserResponse[] {
+  async getAllUsers(): Promise<UserResponse[]> {
     try {
-      return this.userService.getAllUsers();
+      const users = await this.userService.getAllUsers();
+      return users;
     } catch (error: unknown) {
       ErrorHandler(error);
     }
   }
 
   @Get(':id')
-  getOneUser(@Param() params: GetByIdParams): UserResponse {
+  async getOneUser(@Param() params: GetByIdParams): Promise<UserResponse> {
     const { id } = params;
 
     try {
-      return this.userService.getUserById(id);
+      const user = await this.userService.getUserById(id);
+
+      return user;
     } catch (error) {
       ErrorHandler(error);
     }
   }
 
   @Post()
-  createUser(@Body() createUserDto: CreateUserDto): UserResponse {
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponse> {
     try {
-      return this.userService.create(createUserDto);
+      const createdUser = this.userService.create(createUserDto);
+      return createdUser;
     } catch (error) {
       ErrorHandler(error);
     }
   }
 
   @Put(':id')
-  updatePassword(
+  async updatePassword(
     @Param() params: GetByIdParams,
     @Body() updatePasswordDto: UpdatePasswordDto,
-  ): UserResponse {
+  ): Promise<UserResponse> {
     const { id } = params;
     try {
-      return this.userService.updatePassword(id, updatePasswordDto);
+      const updatedUser = await this.userService.updatePassword(
+        id,
+        updatePasswordDto,
+      );
+      return updatedUser;
     } catch (error) {
       ErrorHandler(error);
     }
@@ -63,11 +73,11 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(204)
-  deleteUser(@Param() params: GetByIdParams) {
+  async deleteUser(@Param() params: GetByIdParams): Promise<void> {
     const { id } = params;
 
     try {
-      this.userService.deleteUser(id);
+      await this.userService.deleteUser(id);
     } catch (error) {
       ErrorHandler(error);
     }

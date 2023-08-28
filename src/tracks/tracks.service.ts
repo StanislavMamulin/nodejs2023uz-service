@@ -4,60 +4,80 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './interfaces/track.interface';
-import { TrackNotFoundError } from '../Errors/ServiceError';
-import { DBService } from '../DB/DB.service';
+import { NotFoundError, NotFoundType } from '../Errors/ServiceError';
+import { PrismaService } from '../prisma/prisma.service';
+import { ServiceErrorsHandler } from '../Errors/ErrorHandler';
 
 @Injectable()
 export class TracksService {
-  private readonly tracksDB = this.tracksRepository.trackDB;
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(private readonly tracksRepository: DBService) {}
-
-  getAll(): Track[] {
-    return this.tracksDB.getAll();
-  }
-
-  getTrack(id: string): Track {
-    const track: Track | undefined = this.tracksDB.getById(id);
-
-    if (!track) {
-      throw new TrackNotFoundError();
+  async getAll(): Promise<Track[]> {
+    try {
+      return await this.prisma.track.findMany();
+    } catch (error) {
+      ServiceErrorsHandler(error);
     }
-
-    return track;
   }
 
-  create(createTrackDto: CreateTrackDto): Track {
-    const { name, artistId, albumId, duration } = createTrackDto;
+  async getTrack(id: string): Promise<Track> {
+    try {
+      const track: Track | null = await this.prisma.track.findUnique({
+        where: { id },
+      });
 
-    const newTrack: Track = {
-      id: uuidv4(),
-      name,
-      artistId,
-      albumId,
-      duration,
-    };
+      if (!track) {
+        throw new NotFoundError(NotFoundType.TRACK);
+      }
 
-    this.tracksDB.create(newTrack);
-
-    return newTrack;
-  }
-
-  update(id: string, updateTrackDto: UpdateTrackDto): Track {
-    const track: Track | undefined = this.tracksDB.update(id, updateTrackDto);
-
-    if (!track) {
-      throw new TrackNotFoundError();
+      return track;
+    } catch (error) {
+      ServiceErrorsHandler(error);
     }
-
-    return track;
   }
 
-  deleteTrack(id: string) {
-    const trackIndex: number = this.tracksDB.delete(id);
+  async create(createTrackDto: CreateTrackDto): Promise<Track> {
+    try {
+      const { name, artistId, albumId, duration } = createTrackDto;
 
-    if (trackIndex === -1) {
-      throw new TrackNotFoundError();
+      const newTrack: Track = {
+        id: uuidv4(),
+        name,
+        artistId,
+        albumId,
+        duration,
+      };
+
+      await this.prisma.track.create({
+        data: newTrack,
+      });
+
+      return newTrack;
+    } catch (error) {
+      ServiceErrorsHandler(error);
+    }
+  }
+
+  async update(id: string, updateTrackDto: UpdateTrackDto): Promise<Track> {
+    try {
+      const track: Track = await this.prisma.track.update({
+        where: { id },
+        data: updateTrackDto,
+      });
+
+      return track;
+    } catch (error) {
+      ServiceErrorsHandler(error, NotFoundType.TRACK);
+    }
+  }
+
+  async deleteTrack(id: string): Promise<void> {
+    try {
+      await this.prisma.track.delete({
+        where: { id },
+      });
+    } catch (error) {
+      ServiceErrorsHandler(error, NotFoundType.TRACK);
     }
   }
 }

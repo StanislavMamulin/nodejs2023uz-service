@@ -1,6 +1,6 @@
-import { Album } from '../../albums/interfaces/album.interface';
+import { Album } from '../../Albums/interfaces/album.interface';
 import { BasicDB } from './basicDB.service';
-import { UpdateAlbumDto } from '../../albums/dto/update-album.dto';
+import { UpdateAlbumDto } from '../../Albums/dto/update-album.dto';
 
 export class AlbumDB extends BasicDB<Album, UpdateAlbumDto> {
   update(id: string, data: UpdateAlbumDto): Album | undefined {

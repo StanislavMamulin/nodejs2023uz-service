@@ -1,6 +1,6 @@
-import { UpdateArtistDto } from '../../artists/dto/update-artist.dto';
+import { UpdateArtistDto } from '../../Artists/dto/update-artist.dto';
 import { BasicDB } from './basicDB.service';
-import { Artist } from '../../artists/interfaces/artist.interface';
+import { Artist } from '../../Artists/interfaces/artist.interface';
 
 export class ArtistDB extends BasicDB<Artist, UpdateArtistDto> {
   update(id: string, data: UpdateArtistDto): Artist | undefined {

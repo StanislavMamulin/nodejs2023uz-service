@@ -20,42 +20,42 @@ export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
   @Get()
-  getAllTracks() {
+  async getAllArtists(): Promise<Artist[]> {
     try {
-      return this.artistsService.getAll();
+      return await this.artistsService.getAll();
     } catch (error) {
       ErrorHandler(error);
     }
   }
 
   @Get(':id')
-  getArtist(@Param() params: GetByIdParams) {
+  async getArtist(@Param() params: GetByIdParams): Promise<Artist> {
     const { id } = params;
     try {
-      return this.artistsService.getArtist(id);
+      return await this.artistsService.getArtist(id);
     } catch (error) {
       ErrorHandler(error);
     }
   }
 
   @Post()
-  createTrack(@Body() createTrackDto: CreateArtistDto): Artist {
+  async createTrack(@Body() createTrackDto: CreateArtistDto): Promise<Artist> {
     try {
-      return this.artistsService.create(createTrackDto);
+      return await this.artistsService.create(createTrackDto);
     } catch (error) {
       ErrorHandler(error);
     }
   }
 
   @Put(':id')
-  updateTrackInfo(
+  async updateTrackInfo(
     @Param() params: GetByIdParams,
     @Body() updateTrackDto: UpdateArtistDto,
-  ) {
+  ): Promise<Artist> {
     const { id } = params;
 
     try {
-      return this.artistsService.update(id, updateTrackDto);
+      return await this.artistsService.update(id, updateTrackDto);
     } catch (error) {
       ErrorHandler(error);
     }
@@ -63,10 +63,10 @@ export class ArtistsController {
 
   @Delete(':id')
   @HttpCode(204)
-  deleteTrack(@Param() params: GetByIdParams) {
+  async deleteTrack(@Param() params: GetByIdParams) {
     const { id } = params;
     try {
-      return this.artistsService.deleteArtist(id);
+      await this.artistsService.deleteArtist(id);
     } catch (error) {
       ErrorHandler(error);
     }

@@ -3,63 +3,87 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { DBService } from '../DB/DB.service';
 import { Album } from './interfaces/album.interface';
 import { NotFoundError, NotFoundType } from '../Errors/ServiceError';
+import { PrismaService } from '../prisma/prisma.service';
+import { ServiceErrorsHandler } from '../Errors/ErrorHandler';
 
 @Injectable()
 export class AlbumsService {
-  private readonly albumDB = this.dbService.albumDB;
-  private readonly trackDB = this.dbService.trackDB;
+  constructor(private prisma: PrismaService) {}
 
-  constructor(private dbService: DBService) {}
-
-  getAll(): Album[] {
-    return this.albumDB.getAll();
-  }
-
-  getAlbum(id: string): Album {
-    const album: Album | undefined = this.albumDB.getById(id);
-
-    if (!album) {
-      throw new NotFoundError(NotFoundType.ALBUM);
+  async getAll(): Promise<Album[]> {
+    try {
+      return await this.prisma.album.findMany();
+    } catch (error) {
+      ServiceErrorsHandler(error);
     }
-
-    return album;
   }
 
-  create(createAlbumDto: CreateAlbumDto): Album {
-    const { name, year, artistId } = createAlbumDto;
+  async getAlbum(id: string): Promise<Album> {
+    try {
+      const album: Album | null = await this.prisma.album.findUnique({
+        where: { id },
+        include: {
+          tracks: true,
+          artist: true,
+        },
+      });
 
-    const newAlbum: Album = {
-      id: uuidv4(),
-      name,
-      year,
-      artistId,
-    };
+      if (!album) {
+        throw new NotFoundError(NotFoundType.ALBUM);
+      }
 
-    this.albumDB.create(newAlbum);
-
-    return newAlbum;
-  }
-
-  update(id: string, updateAlbumDto: UpdateAlbumDto): Album {
-    const album: Album | undefined = this.albumDB.update(id, updateAlbumDto);
-
-    if (!album) {
-      throw new NotFoundError(NotFoundType.ALBUM);
+      return album;
+    } catch (error) {
+      ServiceErrorsHandler(error);
     }
-
-    return album;
   }
 
-  deleteAlbum(id: string) {
-    const albumIndex: number = this.albumDB.delete(id);
+  async create(createAlbumDto: CreateAlbumDto): Promise<Album> {
+    try {
+      const { name, year, artistId } = createAlbumDto;
 
-    if (albumIndex === -1) {
-      throw new NotFoundError(NotFoundType.ALBUM);
+      const newAlbum: Album = {
+        id: uuidv4(),
+        name,
+        year,
+        artistId,
+      };
+
+      await this.prisma.album.create({
+        data: newAlbum,
+      });
+
+      return newAlbum;
+    } catch (error) {
+      ServiceErrorsHandler(error);
     }
+  }
 
-    this.trackDB.deleteAlbumFromTracks(id);
+  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<Album> {
+    try {
+      const album: Album = await this.prisma.album.update({
+        where: { id },
+        data: updateAlbumDto,
+      });
+
+      return album;
+    } catch (error) {
+      ServiceErrorsHandler(error, NotFoundType.ALBUM);
+    }
+  }
+
+  async deleteAlbum(id: string): Promise<void> {
+    try {
+      await this.prisma.album.delete({
+        where: { id },
+        include: {
+          tracks: true,
+        },
+      });
+    } catch (error) {
+      ServiceErrorsHandler(error, NotFoundType.ALBUM);
+    }
   }
 }
